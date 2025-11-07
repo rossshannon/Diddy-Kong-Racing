@@ -1,6 +1,6 @@
 # Diddy Kong Racing
 
-This repo contains a work-in-progress decompilation of Diddy Kong Racing for the N64. You will need to have a original copy of the ROM to extract the game's assets.
+This repo contains a work-in-progress decompilation of Diddy Kong Racing for the N64. You will need to have an original copy of the ROM to extract the game's assets.
 
 All versions are supported, and the US 1.0 version (SHA1 = 0cb115d8716dbbc2922fda38e533b9fe63bb9670) of the game is the default if not specified.
 
@@ -19,7 +19,7 @@ As of August 12, 2025, this is our current score:
 - `gcc`, Version 8.0 or higher
 - `make`, Version 4.2 or higher
 - `python3`
-- `libpcre2-dev` and `libpcre2-8-0` (Not technically required, but will speedup extracting/building some assets.)
+- `libpcre2-dev` and `libpcre2-8-0` (Not technically required, but will speed up extracting/building some assets.)
 - `gcc-mips-linux-gnu` is optionally used if compiling NON_MATCHING with COMPILER=gcc
 
 `sudo apt install build-essential pkg-config git python3 python3-pip binutils-mips-linux-gnu python3-venv libpcre2-dev libpcre2-8-0`
@@ -43,7 +43,7 @@ As of August 12, 2025, this is our current score:
 
 ### Building other versions
 
-To build other versions of the ROM, just specifcy the region and version in the make command. All examples are below:
+To build other versions of the ROM, just specify the region and version in the make command. All examples are below:
 Baserom|REGION|VERSION|Command
 ---|--|---|-
 US 1.0 | US | v77 | `make REGION=us VERSION=v77`
@@ -63,7 +63,7 @@ The `NON_MATCHING` define will include the functions that don't exactly match on
 
 The style guide for the project can be found here: https://docs.google.com/document/d/1euQf8nwynGcCZL1MfoMaLs-XRvx3ejjj8fIfykUZ-NQ
 
-If you see variables/functions/structs/etc. that doesn't follow these rules, then file an issue and we'll try to fix them.
+If you see variables/functions/structs/etc. that don't follow these rules, then file an issue and we'll try to fix them.
 
 ## Scripts
 
