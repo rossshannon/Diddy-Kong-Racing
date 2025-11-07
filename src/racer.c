@@ -4020,6 +4020,66 @@ void update_carpet(s32 updateRate, f32 updateRateF, Object *obj, Object_Racer *r
 }
 
 /**
+ * Changes Diddy Kong's red hat vertices to hot pink.
+ * This function iterates through all vertices in Diddy's models and converts
+ * red-colored vertices (hat) to hot pink (RGB: 255, 105, 180).
+ */
+void apply_diddy_pink_hat(Object *obj) {
+    Object_Racer *racer;
+    ModelInstance *modInst;
+    Vertex *vertices;
+    ObjectModel *model;
+    s32 i, j, k;
+    s32 vertexCount;
+
+    if (obj == NULL || obj->racer == NULL) {
+        return;
+    }
+
+    racer = obj->racer;
+
+    // Check if this is Diddy Kong (CHARACTER_DIDDY = 9)
+    if (racer->characterId != CHARACTER_DIDDY) {
+        return;
+    }
+
+    // Iterate through all model instances (car, hovercraft, plane models)
+    if (obj->modelInstances == NULL) {
+        return;
+    }
+
+    for (i = 0; i < obj->header->numberOfModelIds; i++) {
+        modInst = obj->modelInstances[i];
+        if (modInst == NULL || modInst->objModel == NULL) {
+            continue;
+        }
+
+        model = modInst->objModel;
+        vertexCount = model->numberOfVertices;
+
+        // Process all vertex buffers (there can be up to 3 for animation/shading)
+        for (j = 0; j < 3; j++) {
+            vertices = modInst->vertices[j];
+            if (vertices == NULL) {
+                continue;
+            }
+
+            // Iterate through all vertices and change red ones to hot pink
+            for (k = 0; k < vertexCount; k++) {
+                // Check if vertex is "red" - high red value, lower green and blue
+                // Typical red hat colors: high R (>150), low G (<100), low B (<100)
+                if (vertices[k].r > 150 && vertices[k].g < 100 && vertices[k].b < 100) {
+                    // Change to hot pink: RGB(255, 105, 180)
+                    vertices[k].r = 255;
+                    vertices[k].g = 105;
+                    vertices[k].b = 180;
+                }
+            }
+        }
+    }
+}
+
+/**
  * Initialise the basic properties of each racer object. If it's tied to a human player,
  * will also initialise a camera object.
  */
@@ -4126,6 +4186,9 @@ void obj_init_racer(Object *obj, LevelObjectEntry_Racer *racer) {
     gRacerDialogueCamera = i;
     gStartBoostTime = 0;
     tempRacer->lightFlags = 0;
+
+    // Apply hot pink color to Diddy Kong's hat
+    apply_diddy_pink_hat(obj);
 }
 
 /**
