@@ -13640,7 +13640,7 @@ void set_magic_code_flags(s32 flags) {
 #define CHEATS_ALLOWED_IN_ADVENTURE_AND_TIME_TRIAL                                                                   \
     (CHEAT_CONTROL_TT | CHEAT_CONTROL_DRUMSTICK | CHEAT_BIG_CHARACTERS | CHEAT_SMALL_CHARACTERS | CHEAT_HORN_CHEAT | \
      CHEAT_SELECT_SAME_PLAYER | CHEAT_TWO_PLAYER_ADVENTURE | CHEAT_ULTIMATE_AI | CHEAT_EPC_LOCK_UP_DISPLAY |         \
-     CHEAT_ROM_CHECKSUM)
+     CHEAT_ROM_CHECKSUM | CHEAT_SILVER_COINS)
 
 // Remember that ~ means NOT. So the challenge maps only allow cheats NOT included here.
 #define CHEATS_ALLOWED_IN_CHALLENGES                                                                             \

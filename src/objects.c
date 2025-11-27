@@ -973,6 +973,10 @@ void track_spawn_objects(s32 mapID, s32 index) {
     if (level_type()) {
         gIsSilverCoinRace = FALSE;
     }
+    // Enable silver coins when the cheat toggle is active
+    if (get_filtered_cheats() & CHEAT_SILVER_COINS) {
+        gIsSilverCoinRace = TRUE;
+    }
 
     D_8011AD3E = 0;
     mem = mempool_alloc_safe(OBJECT_MAP_SIZE, COLOUR_TAG_BLUE);

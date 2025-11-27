@@ -220,6 +220,7 @@ typedef enum Cheats {
     CHEAT_FREE_BALLOON             = CHEAT(26),
     CHEAT_EPC_LOCK_UP_DISPLAY      = CHEAT(27),
     CHEAT_ROM_CHECKSUM             = CHEAT(28),
+    CHEAT_SILVER_COINS             = CHEAT(29),
     MAX_CHEATS                     = 32
 } Cheats;
 
