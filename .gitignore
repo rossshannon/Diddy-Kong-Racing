@@ -4,7 +4,7 @@
 *.v64
 
 #Ignore any custom boot files if any.
-boot_custom.bin 
+boot_custom.bin
 
 #compiled or ripped asm
 asm/*
@@ -79,4 +79,6 @@ gcc_safe_files.mk
 tools/ido-recomp
 *.DS_Store
 tools/binutils
+build_temp/
+build_temp*
 *.d

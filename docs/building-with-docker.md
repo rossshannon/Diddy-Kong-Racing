@@ -6,7 +6,7 @@ The approach is:
 
 - Use a Linux container (Ubuntu 24.04, amd64) as the build environment.
 - Avoid distro `binutils-mips-linux-gnu`; instead, use the repo’s own `tools/get-binutils.sh` to build a local `mips64-elf` binutils.
-- Work around a Python tooling incompatibility by constraining the `rabbitizer` version used by `spimdisasm`/`splat64`.
+- Work around a Python tooling incompatibility by pinning `rabbitizer==1.13.0` in `requirements.txt`, keeping `spimdisasm`/`splat64` on a compatible version.
 - Mount your working tree into the container so the final ROM appears in `build/dkr.us.v77.z64` on your host.
 
 ## Prerequisites
@@ -65,12 +65,6 @@ docker run --rm \
     # Start from a clean Python virtualenv
     rm -rf .venv
 
-    # Constrain rabbitizer to a version compatible with spimdisasm
-    cat > /tmp/pip-constraints.txt <<EOF
-rabbitizer==1.13.0
-EOF
-    export PIP_CONSTRAINT=/tmp/pip-constraints.txt
-
     # 1) Rebuild host tools (n64crc, dkr_assets_tool)
     make -C tools clean && \
 
@@ -91,30 +85,22 @@ EOF
 What this does, in order:
 
 1. **Cleans `.venv`** to ensure a fresh Python environment.
-2. Creates `/tmp/pip-constraints.txt` with:
-
-   ```text
-   rabbitizer==1.13.0
-   ```
-
-   and sets `PIP_CONSTRAINT` so that `make setup` installs this rabbitizer version, avoiding a runtime `AttributeError` in `spimdisasm`.
-
-3. Runs `make -C tools clean` to force `n64crc` and `tools/dkr_assets_tool` to be rebuilt for Linux/amd64 inside the container.
-4. Runs `make setup`:
+2. Runs `make -C tools clean` to force `n64crc` and `tools/dkr_assets_tool` to be rebuilt for Linux/amd64 inside the container.
+3. Runs `make setup`:
    - Creates `.venv/` using `python3 -m venv`.
-   - Installs `splat64==0.35.2`, `spimdisasm==1.36.1`, and other Python deps under the rabbitizer constraint.
+   - Installs `splat64==0.35.2`, `spimdisasm==1.36.1`, `rabbitizer==1.13.0`, and other Python deps defined in `requirements.txt`.
    - Downloads and unpacks the IDO static recompiler into `tools/ido-recomp/linux`.
-5. Runs `tools/get-binutils.sh`:
+4. Runs `tools/get-binutils.sh`:
    - Downloads and builds GNU binutils 2.36 for target `mips64-elf`.
    - Installs `mips64-elf-{ar,as,ld,objcopy,objdump,strip}` into `tools/binutils/`.
    - Because the container has **no** `binutils-mips-linux-gnu` package, the Makefile will choose these tools (`CROSS := tools/binutils/mips64-elf-`).
-6. Runs `make extract`:
+5. Runs `make extract`:
    - Uses `splat64` to split the baserom based on the `ver/splat/dkr.us.v77.yaml` config.
    - Uses `tools/dkr_assets_tool extract -dkrv us.v77` to extract and convert assets.
    - Produces `assets/assets.bin` and updates `include/asset_enums.h`.
-7. Runs `make -j$(nproc)` to build the game:
+6. Runs `make -j$(nproc)` to build the game:
    - Compiles all C and ASM sources.
-   - Links the ELF and ROM images via the `mips64-elf-ld` built in step 5.
+   - Links the ELF and ROM images via the `mips64-elf-ld` built in step 4.
 
 Because your repo is bind-mounted into `/work`, all outputs appear on your host filesystem.
 
