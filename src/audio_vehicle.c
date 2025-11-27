@@ -912,13 +912,8 @@ void racer_sound_update_all(Object **racerObjs, s32 numRacers, Camera *cameras, 
     }
 
     // Next: manage engine sounds for AI-controlled vehicles.
-    // These background engine sounds are only active in 1-2 player mode,
-    // and only the two loudest sounds are allowed to play simultaneously.
-
-    // Skip background sounds entirely if more than 2 players.
-    if (numCameras > 2) {
-        return;
-    }
+    // [QUALITY MOD] Background engine sounds now active in all player modes.
+    // Only the two loudest sounds are allowed to play simultaneously.
 
     // First, reset background volume for each AI vehicle.
     for (j = numCameras; j < numRacers; j++) {

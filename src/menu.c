@@ -6928,11 +6928,7 @@ void charselect_pick(void) {
         sound_play((*gCurrCharacterSelectData)[gPlayersCharacterArray[characterSelected]].voiceID +
                        SOUND_VOICE_CHARACTER_SELECTED,
                    &gMenuSoundMasks[characterSelected]);
-        if (gNumberOfActivePlayers > 2 ||
-            (gNumberOfActivePlayers > 1 && !(gActiveMagicCodes & CHEAT_TWO_PLAYER_ADVENTURE)) ||
-            gEnteredCharSelectFrom == 1) {
-            music_fade(-128);
-        }
+        // [QUALITY MOD] Music no longer fades in 3/4 player modes
     } else {
         // Character Deselected
         for (i = 0; i < ARRAY_COUNT(gActivePlayersArray); i++) {
