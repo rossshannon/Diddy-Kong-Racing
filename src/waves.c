@@ -193,14 +193,11 @@ void waves_alloc(void) {
 
 /**
  * Initialise wave controller variables using the level header.
- * Two player waves hardset the subdivision level to 4.
+ * [QUALITY MOD] Now uses level header values in all player modes (was reduced in 2 player).
  */
 void waves_init_header(LevelHeader *header) {
-    if (gWavePlayerCount != 2) {
-        gWaveController.subdivisions = header->waveSubdivisons;
-    } else {
-        gWaveController.subdivisions = 4;
-    }
+    // [QUALITY MOD] Always use header subdivision level (was hardcoded to 4 in 2 player)
+    gWaveController.subdivisions = header->waveSubdivisons;
     gWaveController.tileCount = header->unk57;
     gWaveController.initSine[0].sineStep = header->waveSineStep0;
     gWaveController.initSine[0].height = header->waveSineHeight0 / 256.0f;
@@ -209,11 +206,8 @@ void waves_init_header(LevelHeader *header) {
     gWaveController.initSine[1].height = header->waveSineHeight1 / 256.0f;
     gWaveController.initSine[1].sineBase = header->waveSineBase1 << 8;
     gWaveController.seedSize = header->waveSeedSize & ~1; // Always an even number.
-    if (gWavePlayerCount != 2) {
-        gWaveController.waveViewDist = header->waveViewDist;
-    } else {
-        gWaveController.waveViewDist = 3;
-    }
+    // [QUALITY MOD] Always use header view distance (was hardcoded to 3 in 2 player)
+    gWaveController.waveViewDist = header->waveViewDist;
     gWaveController.doubleDensity = header->waveDoubleDensity;
     gWaveController.textureId = header->waveTexID & 0xFFFF;
     gWaveController.uvScaleX = header->waveUVScaleX;

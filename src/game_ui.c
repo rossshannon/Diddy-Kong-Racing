@@ -1205,7 +1205,7 @@ void hud_draw_eggs(Object *racerObj, s32 updateRate) {
 
 /**
  * Render the character portrait and the number of eggs they have secured.
- * Skip the portrait in 3/4 player, unless player 4 is AI controlled.
+ * [QUALITY MOD] Portrait now renders in all player modes.
  */
 void hud_eggs_portrait(Object_Racer *racer, UNUSED s32 updateRate) {
     s32 i;
@@ -1217,9 +1217,8 @@ void hud_eggs_portrait(Object_Racer *racer, UNUSED s32 updateRate) {
     prevY = gCurrentHud->entry[HUD_EGG_CHALLENGE_ICON].pos.x;
     gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT].spriteID = racer->characterId + HUD_SPRITE_PORTRAIT;
     gHudPALScale = TRUE;
-    if (gNumActivePlayers < 3 || (gNumActivePlayers == 3 && racer->playerIndex == PLAYER_COMPUTER)) {
-        hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
-    }
+    // [QUALITY MOD] Always render portrait
+    hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
     if (gCurrentHud->entry[HUD_EGG_CHALLENGE_ICON].challengeEggs.alphaTimer < 0) {
         alpha = (gCurrentHud->entry[HUD_EGG_CHALLENGE_ICON].challengeEggs.alphaTimer * 2) + 256;
     } else {
@@ -1362,17 +1361,16 @@ void hud_battle_portraits(Object *racerObj, s32 updateRate) {
 
 /**
  * Render the portrait and life counter in the battle mode.
- * In 3/4 player, skips the portrait for all human players. Player 4 has a portrait if it's AI.
+ * [QUALITY MOD] Portrait now renders in all player modes.
  */
 void hud_lives_render(Object_Racer *racer, UNUSED s32 updateRate) {
     gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT].spriteID = racer->characterId + HUD_SPRITE_PORTRAIT;
-    if (gNumActivePlayers < 3 || (gNumActivePlayers == 3 && racer->playerIndex == PLAYER_COMPUTER)) {
-        gHudPALScale = TRUE;
-        hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
-        gHudPALScale = FALSE;
-        rdp_init(&gHudDL);
-        rendermode_reset(&gHudDL);
-    }
+    // [QUALITY MOD] Always render portrait
+    gHudPALScale = TRUE;
+    hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
+    gHudPALScale = FALSE;
+    rdp_init(&gHudDL);
+    rendermode_reset(&gHudDL);
     if (racer->bananas < 10) {
         gCurrentHud->entry[HUD_BATTLE_BANANA_COUNT_1].spriteOffset = racer->bananas;
         if (gNumActivePlayers == 2) {
@@ -1387,7 +1385,8 @@ void hud_lives_render(Object_Racer *racer, UNUSED s32 updateRate) {
     if (gNumActivePlayers == 2 && racer->bananas < 10) {
         gCurrentHud->entry[HUD_BATTLE_BANANA_COUNT_1].pos.x -= 6.0f;
     }
-    if (gNumActivePlayers != 2) {
+    // [QUALITY MOD] Always render banana icon and X in battle mode
+    {
         hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_BATTLE_BANANA_X]);
         sprite_opaque(TRUE);
         gHudPALScale = TRUE;
@@ -2045,19 +2044,18 @@ void hud_bananas(Object_Racer *racer, s32 updateRate) {
 
 /**
  * Renders the icons and secured treasure in Smokey's castle.
- * In 4 player, all icons are skipped and in 3 player, player 4's icon is shown on their quadrant.
+ * [QUALITY MOD] Portrait now renders in all player modes.
  */
 void hud_treasure(Object_Racer *racer) {
     s32 i;
     s32 prevY;
 
     prevY = gCurrentHud->entry[HUD_TREASURE_METRE].pos.y;
-    if (gNumActivePlayers < 3 || (gNumActivePlayers == 3 && racer->playerIndex == PLAYER_COMPUTER)) {
-        gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT].spriteID = racer->characterId + HUD_SPRITE_PORTRAIT;
-        gHudPALScale = TRUE;
-        hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
-        gHudPALScale = FALSE;
-    }
+    // [QUALITY MOD] Always render portrait
+    gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT].spriteID = racer->characterId + HUD_SPRITE_PORTRAIT;
+    gHudPALScale = TRUE;
+    hud_element_render(&gHudDL, &gHudMtx, &gHudVtx, &gCurrentHud->entry[HUD_CHALLENGE_PORTRAIT]);
+    gHudPALScale = FALSE;
     for (i = 0; i < 10; i++) {
         if (i >= racer->lap) {
             gHudColour = COLOUR_RGBA32(128, 128, 128, 128);

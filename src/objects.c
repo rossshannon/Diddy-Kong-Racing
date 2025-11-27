@@ -1441,23 +1441,11 @@ void track_setup_racers(Vehicle vehicle, u32 entranceID, s32 playerCount) {
         for (k = 0; k < 10; k++) {
             update_player_racer(racerObj, LOGIC_30FPS); // Settle racers.
         }
-        if (curRacer->playerIndex == PLAYER_COMPUTER) {
-            var_s4++;
-            var_s4 &= 1;
-            for (k = 0; k < racerObj->header->numberOfModelIds; k++) {
-                if (racerObj->modelInstances[k] != NULL) {
-                    if (racerObj->modelInstances[k]->animUpdateTimer != 0) {
-                        racerObj->modelInstances[k]->animUpdateTimer = (var_s4 * 2);
-                    }
-                }
-            }
-        } else {
-            // curRacer is a human racer.
-            for (k = 0; k < racerObj->header->numberOfModelIds; k++) {
-                if (racerObj->modelInstances[k] != NULL) {
-                    if (racerObj->modelInstances[k]->animUpdateTimer != 0) {
-                        racerObj->modelInstances[k]->animUpdateTimer = 0;
-                    }
+        // [QUALITY MOD] All racers use same animation timer (was staggered for AI)
+        for (k = 0; k < racerObj->header->numberOfModelIds; k++) {
+            if (racerObj->modelInstances[k] != NULL) {
+                if (racerObj->modelInstances[k]->animUpdateTimer != 0) {
+                    racerObj->modelInstances[k]->animUpdateTimer = 0;
                 }
             }
         }
@@ -3471,13 +3459,8 @@ void render_3d_model(Object *obj) {
                     obj_shade_fast(objModel, obj, gCurrentLightIntensity);
                 }
             }
-            // Set the animation ticker for non player racers to 2, making them animate at half the framerate.
-            if ((racerObj != NULL) && (racerObj->playerIndex == PLAYER_COMPUTER) &&
-                (racerObj->vehicleID < VEHICLE_BOSSES)) {
-                modInst->animUpdateTimer = 2;
-            } else {
-                modInst->animUpdateTimer = 1;
-            }
+            // [QUALITY MOD] All racers now animate at full framerate (was half for AI)
+            modInst->animUpdateTimer = 1;
         }
         obj->curVertData = modInst->vertices[modInst->animationTaskNum];
         if (obj->behaviorId == BHV_DOOR) {
