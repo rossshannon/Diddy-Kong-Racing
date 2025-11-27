@@ -1,0 +1,40 @@
+# Diddy Kong Racing (N64) build container (no system cross binutils)
+# Linux environment that relies on repo-provided tools/get-binutils.sh
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Base tools + required deps from README
+# - build-essential/make/pkg-config/git/python3/python3-venv
+# - NO binutils-mips-linux-gnu here; Makefile will fall back to tools/get-binutils.sh
+# - libpcre2-* speeds up extraction tools
+# - zlib1g-dev so binutils built by get-binutils.sh can link against zlib
+# - curl,wget,xz-utils,ca-certificates used by setup scripts
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential \
+    make \
+    pkg-config \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    libpcre2-dev \
+    libpcre2-8-0 \
+    zlib1g-dev \
+    curl \
+    wget \
+    xz-utils \
+    ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+# Default workdir; bind-mount the repo here at runtime
+WORKDIR /work
+
+# Helpful default shell
+SHELL ["/bin/bash", "-lc"]
+
+# Print toolchain versions for debugging (system toolchain only)
+RUN echo "Tool versions (nocross):" \
+ && make --version | head -n1 \
+ && python3 --version || true
