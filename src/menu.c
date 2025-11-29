@@ -719,7 +719,11 @@ u8 gTitleCinematicTextColours[] = {
 
 UNUSED u8 unused_800DFA0C[] = { 0, 0, 15, 120 };
 
-char *gOptionMenuStrings[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+char *gOptionMenuStrings[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+
+// Silver Coins menu option text (hardcoded since not in original ROM assets)
+static char *sSilverCoinsOnText = "SILVER COINS ON";
+static char *sSilverCoinsOffText = "SILVER COINS OFF";
 
 s16 gOptionMenuTextures[] = { 0x3D, 0x3C, 0x3F, 0x3E, 0x44, -1 };
 s16 gOptionMenuImageIndices[] = { -1 };
@@ -2015,10 +2019,15 @@ void load_menu_text(s32 language) {
     } else {
         gOptionMenuStrings[1] = menuText[ASSET_MENU_TEXT_SUBTITLESOFF]; // "SUBTITLES OFF"
     }
-    gOptionMenuStrings[2] = menuText[ASSET_MENU_TEXT_AUDIOOPTIONS];                          // "AUDIO OPTIONS"
-    gOptionMenuStrings[3] = menuText[ASSET_MENU_TEXT_SAVEOPTIONS];                           // "SAVE OPTIONS"
-    gOptionMenuStrings[4] = menuText[ASSET_MENU_TEXT_MAGICCODES];                            // "MAGIC CODES"
-    gOptionMenuStrings[5] = menuText[ASSET_MENU_TEXT_RETURN];                                // "RETURN"
+    if (sEepromSettings & 0x4000000) {
+        gOptionMenuStrings[2] = sSilverCoinsOnText;  // "SILVER COINS ON"
+    } else {
+        gOptionMenuStrings[2] = sSilverCoinsOffText; // "SILVER COINS OFF"
+    }
+    gOptionMenuStrings[3] = menuText[ASSET_MENU_TEXT_AUDIOOPTIONS];                          // "AUDIO OPTIONS"
+    gOptionMenuStrings[4] = menuText[ASSET_MENU_TEXT_SAVEOPTIONS];                           // "SAVE OPTIONS"
+    gOptionMenuStrings[5] = menuText[ASSET_MENU_TEXT_MAGICCODES];                            // "MAGIC CODES"
+    gOptionMenuStrings[6] = menuText[ASSET_MENU_TEXT_RETURN];                                // "RETURN"
     gFilenames[0] = menuText[ASSET_MENU_TEXT_GAMEA];                                         // "GAME A"
     gFilenames[1] = menuText[ASSET_MENU_TEXT_GAMEB];                                         // "GAME B"
     gFilenames[2] = menuText[ASSET_MENU_TEXT_GAMEC];                                         // "GAME C"
@@ -3687,13 +3696,13 @@ s32 menu_options_loop(s32 updateRate) {
             analogueY += gControllersYAxisDirection[i];
         }
     }
-    if ((buttonsPressed & B_BUTTON) || ((buttonsPressed & (A_BUTTON | START_BUTTON)) && gMenuCurIndex == 5)) {
+    if ((buttonsPressed & B_BUTTON) || ((buttonsPressed & (A_BUTTON | START_BUTTON)) && gMenuCurIndex == 6)) {
         // Leave the option menu
         music_fade(-128);
         gMenuDelay = -1;
         transition_begin(&sMenuTransitionFadeIn);
         sound_play(SOUND_MENU_BACK3, NULL);
-    } else if ((buttonsPressed & (A_BUTTON | START_BUTTON)) && gMenuCurIndex >= 2) {
+    } else if ((buttonsPressed & (A_BUTTON | START_BUTTON)) && gMenuCurIndex >= 3) {
         // Go to a sub-menu
         gMenuDelay = 31;
         sound_play(SOUND_SELECT2, NULL);
@@ -3743,12 +3752,23 @@ s32 menu_options_loop(s32 updateRate) {
             set_subtitles(1);
             gOptionMenuStrings[1] = gMenuText[ASSET_MENU_TEXT_SUBTITLESON];
         }
+    } else if (gMenuCurIndex == 2 && analogueX != 0) {
+        // 0x4000000 SILVER COINS ENABLED
+        if (sEepromSettings & 0x4000000) {
+            sound_play(SOUND_MENU_PICK2, NULL);
+            unset_eeprom_settings_value(0x4000000);
+            gOptionMenuStrings[2] = sSilverCoinsOffText;
+        } else {
+            sound_play(SOUND_MENU_PICK2, NULL);
+            set_eeprom_settings_value(0x4000000);
+            gOptionMenuStrings[2] = sSilverCoinsOnText;
+        }
     } else {
         s32 prevOption = gMenuCurIndex;
         if (analogueY < 0) {
             gMenuCurIndex++;
-            if (gMenuCurIndex >= 6) {
-                gMenuCurIndex = 5;
+            if (gMenuCurIndex >= 7) {
+                gMenuCurIndex = 6;
             }
         }
         if (analogueY > 0) {
@@ -3769,12 +3789,12 @@ s32 menu_options_loop(s32 updateRate) {
     }
     if (gMenuDelay > 30) {
         // Change screen to a sub-menu
-        if (gMenuCurIndex == 2) {
+        if (gMenuCurIndex == 3) {
             optionscreen_free();
             menu_init(MENU_AUDIO_OPTIONS);
             return MENU_RESULT_CONTINUE;
         }
-        if (gMenuCurIndex == 3) {
+        if (gMenuCurIndex == 4) {
             optionscreen_free();
             menu_init(MENU_SAVE_OPTIONS);
             return MENU_RESULT_CONTINUE;

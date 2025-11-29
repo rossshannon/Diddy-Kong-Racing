@@ -973,6 +973,10 @@ void track_spawn_objects(s32 mapID, s32 index) {
     if (level_type()) {
         gIsSilverCoinRace = FALSE;
     }
+    // Check if Silver Coins option is disabled in the menu (0x4000000 bit)
+    if ((get_eeprom_settings() & 0x4000000) == 0) {
+        gIsSilverCoinRace = FALSE;
+    }
 
     D_8011AD3E = 0;
     mem = mempool_alloc_safe(OBJECT_MAP_SIZE, COLOUR_TAG_BLUE);
