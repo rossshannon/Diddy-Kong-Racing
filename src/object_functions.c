@@ -4510,7 +4510,8 @@ void obj_init_silvercoin_adv2(Object *obj, UNUSED LevelObjectEntry_SilverCoinAdv
     obj->interactObj->hitboxRadius = 30;
     obj->properties.silverCoin.action = SILVER_COIN_INACTIVE;
     obj->properties.silverCoin.timer = 16;
-    if (!is_in_tracks_mode()) {
+    // Allow spawning in Tracks mode when Silver Coins option is ON
+    if (!is_in_tracks_mode() || (get_eeprom_settings() & 0x4000000)) {
         if (check_if_silver_coin_race() && is_in_adventure_two()) {
             obj->properties.silverCoin.action = SILVER_COIN_ACTIVE;
         } else {
@@ -4534,7 +4535,8 @@ void obj_init_silvercoin(Object *obj, UNUSED LevelObjectEntry_SilverCoin *entry)
     obj->interactObj->hitboxRadius = 30;
     obj->properties.silverCoin.action = SILVER_COIN_INACTIVE;
     obj->properties.silverCoin.timer = 0;
-    if (!is_in_tracks_mode()) {
+    // Allow spawning in Tracks mode when Silver Coins option is ON
+    if (!is_in_tracks_mode() || (get_eeprom_settings() & 0x4000000)) {
         if (check_if_silver_coin_race() && !is_in_adventure_two()) {
             obj->properties.silverCoin.action = SILVER_COIN_ACTIVE;
         } else {

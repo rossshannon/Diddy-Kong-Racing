@@ -976,6 +976,9 @@ void track_spawn_objects(s32 mapID, s32 index) {
     // Check if Silver Coins option is disabled in the menu (0x4000000 bit)
     if ((get_eeprom_settings() & 0x4000000) == 0) {
         gIsSilverCoinRace = FALSE;
+    } else if (is_in_tracks_mode()) {
+        // Override: enable silver coins in Tracks mode when option is ON
+        gIsSilverCoinRace = TRUE;
     }
 
     D_8011AD3E = 0;
