@@ -442,7 +442,7 @@ void transition_render_fullscreen(Gfx **dList, UNUSED Mtx **mtx, UNUSED Vertex *
     gSPDisplayList((*dList)++, dTransitionFadeSettings);
     gDPSetPrimColor((*dList)++, 0, 0, gCurFadeRed, gCurFadeGreen, gCurFadeBlue, gCurFadeAlpha);
     gDPSetCombineMode((*dList)++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-    gDPFillRectangle((*dList)++, 0, 0, screenSize & 0x3FF, (screenSize >> 16) & 0x3FF);
+    gDPFillRectangle((*dList)++, 0, 0, GET_VIDEO_WIDTH(screenSize), GET_VIDEO_HEIGHT(screenSize));
     rendermode_reset(dList);
 }
 
